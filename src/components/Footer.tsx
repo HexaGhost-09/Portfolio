@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import { Film, Heart, ArrowUp } from "lucide-react";
-import { creatorInfo } from "../data/portfolioData";
+import { ArrowUp } from "lucide-react";
+import { portfolioConfig } from "../data/portfolioData";
 
 export default function Footer() {
   const scrollToTop = () => {
@@ -10,31 +10,23 @@ export default function Footer() {
   };
 
   return (
-    <footer className="border-t border-border/80 bg-[#07080c] py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
+    <footer className="border-t border-white/[0.08] bg-[#070708] py-12 px-5 sm:px-8">
+      <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6 text-xs font-mono text-neutral-500 uppercase tracking-wider">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-surface border border-border flex items-center justify-center">
-            <Film className="w-4 h-4 text-accent-cyan" />
-          </div>
-          <div>
-            <span className="text-sm font-bold text-white font-mono tracking-wider">
-              {creatorInfo.name}
-            </span>
-            <span className="text-xs text-neutral-500 block">
-              © {new Date().getFullYear()} • All Visual Rights Reserved
-            </span>
-          </div>
+          <span className="text-white font-medium">{portfolioConfig.name}</span>
+          <span>•</span>
+          <span>Editorial, Motion & Color</span>
         </div>
 
-        <div className="text-xs text-neutral-400 text-center">
-          Built with Next.js & Tailwind CSS • Powered by After Effects & Premiere Pro
+        <div className="text-[11px]">
+          © {new Date().getFullYear()} — All Visual Rights Reserved
         </div>
 
         <button
           onClick={scrollToTop}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-surface border border-border text-xs text-neutral-300 hover:text-white hover:border-neutral-500 transition-colors"
+          className="flex items-center gap-2 text-neutral-400 hover:text-white transition-colors"
         >
-          <span>Back to Top</span>
+          <span>Top</span>
           <ArrowUp className="w-3.5 h-3.5" />
         </button>
       </div>

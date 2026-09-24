@@ -1,257 +1,220 @@
 "use client";
 
 import React, { useState } from "react";
-import { Mail, Check, Copy, Send, MessageSquare, Youtube, Instagram, Globe, Sparkles } from "lucide-react";
-import { creatorInfo, socialLinks } from "../data/portfolioData";
+import { ArrowUpRight, Check, Copy } from "lucide-react";
+import { portfolioConfig } from "../data/portfolioData";
 
 export default function ContactSection() {
-  const [copiedEmail, setCopiedEmail] = useState(false);
-  const [selectedService, setSelectedService] = useState("Video Editing");
-  const [selectedBudget, setSelectedBudget] = useState("$500 - $1,000");
-  const [formSubmitted, setFormSubmitted] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [projectType, setProjectType] = useState("Commercial Edit");
+  const [budget, setBudget] = useState("$500 - $1,500");
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    projectBrief: "",
+    timeline: "",
+    brief: "",
   });
 
-  const services = [
-    "Video Editing",
-    "Motion Graphics",
+  const projectTypes = [
+    "Commercial Edit",
+    "Motion Graphics & 3D",
     "Color Grading",
+    "Music Video",
     "Photo Retouching",
-    "Full Package",
   ];
 
-  const budgets = [
-    "<$300",
-    "$300 - $500",
-    "$500 - $1,000",
-    "$1,000 - $2,500",
-    "$2,500+",
+  const budgetTiers = [
+    "< $500",
+    "$500 - $1,500",
+    "$1,500 - $3,000",
+    "$3,000+",
   ];
 
   const handleCopyEmail = () => {
-    navigator.clipboard.writeText(creatorInfo.email);
-    setCopiedEmail(true);
-    setTimeout(() => setCopiedEmail(false), 2500);
+    navigator.clipboard.writeText(portfolioConfig.email);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSendInquiry = (e: React.FormEvent) => {
     e.preventDefault();
-    // Generate mailto link or handle submission
-    const subject = encodeURIComponent(`Project Inquiry: ${selectedService} [Budget: ${selectedBudget}] from ${formData.name}`);
+    const subject = encodeURIComponent(`Project Inquiry: ${projectType} from ${formData.name}`);
     const body = encodeURIComponent(
-      `Hi Rasel,\n\nName: ${formData.name}\nEmail: ${formData.email}\nService: ${selectedService}\nEstimated Budget: ${selectedBudget}\n\nProject Details:\n${formData.projectBrief}`
+      `Name: ${formData.name}\nEmail: ${formData.email}\nProject Type: ${projectType}\nBudget Range: ${budget}\nEstimated Timeline: ${formData.timeline}\n\nProject Scope:\n${formData.brief}`
     );
-    window.location.href = `mailto:${creatorInfo.email}?subject=${subject}&body=${body}`;
-    setFormSubmitted(true);
-  };
-
-  const getSocialIcon = (icon: string) => {
-    switch (icon) {
-      case "Youtube":
-        return <Youtube className="w-5 h-5 text-red-400" />;
-      case "Instagram":
-        return <Instagram className="w-5 h-5 text-pink-400" />;
-      case "Globe":
-        return <Globe className="w-5 h-5 text-blue-400" />;
-      case "MessageSquare":
-        return <MessageSquare className="w-5 h-5 text-emerald-400" />;
-      default:
-        return <Mail className="w-5 h-5 text-accent-cyan" />;
-    }
+    window.location.href = `mailto:${portfolioConfig.email}?subject=${subject}&body=${body}`;
   };
 
   return (
-    <section id="contact" className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-      <div className="text-center max-w-2xl mx-auto mb-16">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-mono uppercase tracking-wider mb-3">
-          <Sparkles className="w-3.5 h-3.5" />
-          Ready to Collaborate?
-        </div>
-        <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
-          Let&apos;s Build Something Cinematic
-        </h2>
-        <p className="text-neutral-400 mt-3 text-sm sm:text-base">
-          Whether you need a high-retention video edit, custom motion package, or clean photographic color grade, send over the details.
-        </p>
-      </div>
+    <section id="contact" className="py-24 px-5 sm:px-8 max-w-7xl mx-auto border-t border-white/[0.08]">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
+        {/* Left Column: Direct Inquiries & Channels */}
+        <div className="lg:col-span-5 flex flex-col justify-between">
+          <div>
+            <span className="text-xs font-mono uppercase tracking-widest text-neutral-500 mb-3 block">
+              [ 04 ] Get in Touch
+            </span>
+            <h2 className="text-3xl sm:text-5xl font-medium tracking-tight text-white mb-6">
+              Let&apos;s talk about your next cut.
+            </h2>
+            <p className="text-sm text-neutral-400 leading-relaxed mb-8 max-w-md">
+              Currently accepting commercial edits, motion design contracts, and color grading projects worldwide.
+            </p>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-        {/* Left Column: Direct Contact & Social Cards */}
-        <div className="lg:col-span-5 flex flex-col justify-between space-y-6">
-          {/* Quick Copy Email Card */}
-          <div className="p-6 rounded-2xl bg-[#0d0f17] border border-border">
-            <h3 className="text-sm font-semibold text-neutral-300 uppercase tracking-wider mb-3">
-              Direct Contact
-            </h3>
-            <div className="flex items-center justify-between p-3.5 rounded-xl bg-surface border border-border group">
-              <div className="flex items-center gap-3 overflow-hidden">
-                <div className="p-2 rounded-lg bg-accent-cyan/10 text-accent-cyan">
-                  <Mail className="w-4 h-4" />
-                </div>
-                <span className="text-xs sm:text-sm font-mono text-neutral-200 truncate">
-                  {creatorInfo.email}
-                </span>
+            {/* Email Box */}
+            <div className="p-4 rounded-xl bg-surface border border-white/[0.08] mb-10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-neutral-500 block mb-2">
+                Direct Inquiries
+              </span>
+              <div className="flex items-center justify-between gap-4">
+                <a
+                  href={`mailto:${portfolioConfig.email}`}
+                  className="text-sm sm:text-base font-mono text-white hover:text-neutral-300 transition-colors truncate"
+                >
+                  {portfolioConfig.email}
+                </a>
+                <button
+                  onClick={handleCopyEmail}
+                  className="px-3 py-1.5 rounded-lg bg-surfaceElevated hover:bg-white/10 text-xs font-mono text-neutral-300 transition-colors flex items-center gap-1.5 shrink-0"
+                >
+                  {copied ? (
+                    <>
+                      <Check className="w-3.5 h-3.5 text-emerald-400" />
+                      <span className="text-emerald-400">Copied</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-3.5 h-3.5 text-neutral-400" />
+                      <span>Copy</span>
+                    </>
+                  )}
+                </button>
               </div>
-              <button
-                onClick={handleCopyEmail}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-[#1c202d] hover:bg-neutral-800 text-neutral-300 transition-colors shrink-0"
-              >
-                {copiedEmail ? (
-                  <>
-                    <Check className="w-3.5 h-3.5 text-emerald-400" />
-                    <span className="text-emerald-400">Copied!</span>
-                  </>
-                ) : (
-                  <>
-                    <Copy className="w-3.5 h-3.5" />
-                    <span>Copy</span>
-                  </>
-                )}
-              </button>
             </div>
           </div>
 
-          {/* Social Channels List */}
-          <div className="p-6 rounded-2xl bg-[#0d0f17] border border-border flex-1">
-            <h3 className="text-sm font-semibold text-neutral-300 uppercase tracking-wider mb-4">
-              Connect Across Channels
-            </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3">
-              {socialLinks.map((link) => (
+          {/* Social Links */}
+          <div>
+            <span className="text-[10px] font-mono uppercase tracking-widest text-neutral-500 block mb-3">
+              Elsewhere
+            </span>
+            <div className="flex flex-wrap gap-4 text-xs font-mono">
+              {portfolioConfig.socials.map((social) => (
                 <a
-                  key={link.platform}
-                  href={link.url}
+                  key={social.name}
+                  href={social.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-between p-3 rounded-xl bg-surface hover:bg-surfaceHover border border-border hover:border-neutral-500 transition-all group"
+                  className="flex items-center gap-1 text-neutral-400 hover:text-white transition-colors"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-[#090a0f] border border-border">
-                      {getSocialIcon(link.icon)}
-                    </div>
-                    <div>
-                      <div className="text-xs font-bold text-white group-hover:text-accent-cyan transition-colors">
-                        {link.platform}
-                      </div>
-                      <div className="text-[11px] text-neutral-400 font-mono">
-                        {link.handle}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="text-xs text-neutral-500 group-hover:text-white transition-colors">
-                    →
-                  </div>
+                  <span>{social.name}</span>
+                  <ArrowUpRight className="w-3 h-3 text-neutral-600" />
                 </a>
               ))}
             </div>
           </div>
         </div>
 
-        {/* Right Column: Interactive Inquiry Form */}
-        <div className="lg:col-span-7 bg-[#0d0f17] border border-border rounded-2xl p-6 sm:p-8 shadow-2xl">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Service selector */}
+        {/* Right Column: Sleek Inquiry Form */}
+        <div className="lg:col-span-7 bg-surface rounded-2xl p-6 sm:p-10 border border-white/[0.08]">
+          <form onSubmit={handleSendInquiry} className="space-y-6">
+            {/* Service Selector */}
             <div>
-              <label className="block text-xs font-mono uppercase tracking-wider text-neutral-300 mb-2.5">
-                1. Select Service Type
+              <label className="block text-[11px] font-mono uppercase tracking-widest text-neutral-400 mb-3">
+                Project Category
               </label>
-              <div className="flex flex-wrap gap-2">
-                {services.map((svc) => (
+              <div className="flex flex-wrap gap-1.5">
+                {projectTypes.map((type) => (
                   <button
                     type="button"
-                    key={svc}
-                    onClick={() => setSelectedService(svc)}
-                    className={`px-3.5 py-2 rounded-lg text-xs font-medium transition-all ${
-                      selectedService === svc
-                        ? "bg-accent-cyan text-black font-bold shadow-md shadow-cyan-500/20"
-                        : "bg-surface hover:bg-surfaceHover text-neutral-300 border border-border"
+                    key={type}
+                    onClick={() => setProjectType(type)}
+                    className={`px-3.5 py-1.5 rounded-full text-xs font-mono tracking-wider transition-all ${
+                      projectType === type
+                        ? "bg-white text-black font-semibold"
+                        : "bg-surfaceElevated text-neutral-400 hover:text-white border border-white/[0.06]"
                     }`}
                   >
-                    {svc}
+                    {type}
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* Estimated Budget selector */}
+            {/* Budget Selector */}
             <div>
-              <label className="block text-xs font-mono uppercase tracking-wider text-neutral-300 mb-2.5">
-                2. Approximate Project Budget
+              <label className="block text-[11px] font-mono uppercase tracking-widest text-neutral-400 mb-3">
+                Estimated Budget
               </label>
-              <div className="flex flex-wrap gap-2">
-                {budgets.map((b) => (
+              <div className="flex flex-wrap gap-1.5">
+                {budgetTiers.map((tier) => (
                   <button
                     type="button"
-                    key={b}
-                    onClick={() => setSelectedBudget(b)}
-                    className={`px-3.5 py-2 rounded-lg text-xs font-medium transition-all ${
-                      selectedBudget === b
-                        ? "bg-amber-400 text-black font-bold shadow-md shadow-amber-500/20"
-                        : "bg-surface hover:bg-surfaceHover text-neutral-300 border border-border"
+                    key={tier}
+                    onClick={() => setBudget(tier)}
+                    className={`px-3.5 py-1.5 rounded-full text-xs font-mono tracking-wider transition-all ${
+                      budget === tier
+                        ? "bg-white text-black font-semibold"
+                        : "bg-surfaceElevated text-neutral-400 hover:text-white border border-white/[0.06]"
                     }`}
                   >
-                    {b}
+                    {tier}
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* Contact Details */}
+            {/* Inputs */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-neutral-300 mb-2">
-                  Your Name
+                <label className="block text-[11px] font-mono uppercase tracking-widest text-neutral-400 mb-2">
+                  Name / Studio
                 </label>
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Alex Rivera"
+                  placeholder="e.g. Marcus Miller"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl bg-surface border border-border text-white text-sm focus:outline-none focus:border-accent-cyan transition-colors"
+                  className="w-full px-4 py-3 rounded-xl bg-surfaceElevated border border-white/[0.08] text-white text-sm focus:outline-none focus:border-white/30 transition-colors"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-neutral-300 mb-2">
-                  Email Address
+                <label className="block text-[11px] font-mono uppercase tracking-widest text-neutral-400 mb-2">
+                  Email
                 </label>
                 <input
                   type="email"
                   required
-                  placeholder="alex@brand.com"
+                  placeholder="name@company.com"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl bg-surface border border-border text-white text-sm focus:outline-none focus:border-accent-cyan transition-colors"
+                  className="w-full px-4 py-3 rounded-xl bg-surfaceElevated border border-white/[0.08] text-white text-sm focus:outline-none focus:border-white/30 transition-colors"
                 />
               </div>
             </div>
 
-            {/* Project Brief */}
             <div>
-              <label className="block text-xs font-mono uppercase tracking-wider text-neutral-300 mb-2">
-                Project Vision & Scope
+              <label className="block text-[11px] font-mono uppercase tracking-widest text-neutral-400 mb-2">
+                Project Scope & Foot length
               </label>
               <textarea
-                rows={4}
+                rows={3}
                 required
-                placeholder="Tell me about the footage length, desired turnaround, reference videos or moodboard..."
-                value={formData.projectBrief}
-                onChange={(e) => setFormData({ ...formData, projectBrief: e.target.value })}
-                className="w-full px-4 py-3 rounded-xl bg-surface border border-border text-white text-sm focus:outline-none focus:border-accent-cyan transition-colors resize-none"
+                placeholder="Give a quick summary: footage camera, turnaround deadline, reference links..."
+                value={formData.brief}
+                onChange={(e) => setFormData({ ...formData, brief: e.target.value })}
+                className="w-full px-4 py-3 rounded-xl bg-surfaceElevated border border-white/[0.08] text-white text-sm focus:outline-none focus:border-white/30 transition-colors resize-none"
               />
             </div>
 
-            {/* Submit */}
             <button
               type="submit"
-              className="w-full py-4 rounded-xl text-sm font-bold uppercase tracking-wider text-black bg-accent-cyan hover:bg-cyan-300 transition-all shadow-[0_0_25px_rgba(0,240,255,0.3)] flex items-center justify-center gap-2"
+              className="w-full py-3.5 rounded-full bg-white text-black font-medium text-xs font-mono uppercase tracking-widest hover:bg-neutral-200 transition-colors flex items-center justify-center gap-2"
             >
-              <Send className="w-4 h-4" />
-              Launch Project Inquiry
+              <span>Submit Project Inquiry</span>
+              <ArrowUpRight className="w-4 h-4" />
             </button>
           </form>
         </div>

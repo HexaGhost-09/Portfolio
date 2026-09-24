@@ -1,17 +1,16 @@
 "use client";
 
 import React, { useState, useRef, useCallback } from "react";
-import Image from "next/image";
-import { Sliders, Sparkles, Layers, ArrowLeftRight } from "lucide-react";
-import { beforeAfterPresets } from "../data/portfolioData";
+import { ArrowLeftRight, Camera, SlidersHorizontal } from "lucide-react";
+import { beforeAfterGrades } from "../data/portfolioData";
 
 export default function BeforeAfterSlider() {
-  const [selectedPresetIndex, setSelectedPresetIndex] = useState(0);
-  const [sliderPosition, setSliderPosition] = useState(50); // percentage 0 - 100
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [sliderPos, setSliderPos] = useState(50);
   const [isDragging, setIsDragging] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const activeItem = beforeAfterPresets[selectedPresetIndex];
+  const activeGrade = beforeAfterGrades[activeIndex];
 
   const handleMove = useCallback((clientX: number) => {
     if (!containerRef.current) return;
@@ -19,7 +18,7 @@ export default function BeforeAfterSlider() {
     const x = clientX - rect.left;
     const clampedX = Math.max(0, Math.min(x, rect.width));
     const percentage = (clampedX / rect.width) * 100;
-    setSliderPosition(percentage);
+    setSliderPos(percentage);
   }, []);
 
   const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
@@ -33,45 +32,60 @@ export default function BeforeAfterSlider() {
   };
 
   return (
-    <section id="before-after" className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    <section id="color-lab" className="py-24 px-5 sm:px-8 max-w-7xl mx-auto border-t border-white/[0.08]">
       {/* Section Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+      <div className="flex flex-col md:flex-row md:items-end justify-between mb-14 gap-8">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-accent-cyan/10 border border-accent-cyan/20 text-accent-cyan text-xs font-mono uppercase tracking-wider mb-3">
-            <Sliders className="w-3.5 h-3.5" />
-            Interactive Color & Retouching Lab
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-            Before & After Grading
+          <span className="text-xs font-mono uppercase tracking-widest text-neutral-500 mb-3 block">
+            [ 02 ] Color Science & Retouch
+          </span>
+          <h2 className="text-3xl sm:text-5xl font-medium tracking-tight text-white">
+            Log vs. Master Grade
           </h2>
-          <p className="text-neutral-400 mt-2 text-sm sm:text-base max-w-xl">
-            Drag the slider horizontally to inspect RAW log capture vs final color-graded & skin-retouched output.
+          <p className="text-sm text-neutral-400 mt-2 max-w-lg">
+            Interact with the scrubber to inspect tonal curve manipulation, skin isolation, and film print emulation.
           </p>
         </div>
 
-        {/* Preset Selector Buttons */}
-        <div className="flex flex-wrap gap-2 p-1.5 bg-[#0d0f17] border border-border rounded-xl">
-          {beforeAfterPresets.map((preset, idx) => (
+        {/* Preset Selector */}
+        <div className="flex flex-wrap gap-1 p-1 bg-surface rounded-full border border-white/[0.08]">
+          {beforeAfterGrades.map((grade, idx) => (
             <button
-              key={preset.id}
+              key={grade.id}
               onClick={() => {
-                setSelectedPresetIndex(idx);
-                setSliderPosition(50);
+                setActiveIndex(idx);
+                setSliderPos(50);
               }}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                selectedPresetIndex === idx
-                  ? "bg-accent-cyan text-black font-bold shadow-lg shadow-cyan-500/25"
-                  : "text-neutral-400 hover:text-white hover:bg-surface"
+              className={`px-4 py-1.5 rounded-full text-xs font-mono tracking-wider uppercase transition-all ${
+                activeIndex === idx
+                  ? "bg-white text-black font-semibold"
+                  : "text-neutral-400 hover:text-white"
               }`}
             >
-              {preset.title.split(" ")[0]} Style
+              Grade {idx + 1}
             </button>
           ))}
         </div>
       </div>
 
-      {/* Main Interactive Slider Component */}
-      <div className="relative rounded-2xl overflow-hidden border border-border bg-[#0d0f17] shadow-2xl">
+      {/* Grading Suite Monitor Frame */}
+      <div className="rounded-2xl overflow-hidden border border-white/[0.1] bg-[#09090c] shadow-2xl">
+        {/* Top Monitor Status Bar */}
+        <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-3 border-b border-white/[0.08] bg-[#07070a] text-[11px] font-mono uppercase text-neutral-400">
+          <div className="flex items-center gap-3">
+            <span className="text-white font-medium">{activeGrade.title}</span>
+            <span className="text-neutral-700 hidden sm:inline">•</span>
+            <span className="text-neutral-500 hidden sm:inline">{activeGrade.camera}</span>
+          </div>
+
+          <div className="flex items-center gap-4 text-neutral-500">
+            <span>{activeGrade.colorSpace}</span>
+            <span className="text-neutral-700 hidden sm:inline">•</span>
+            <span className="text-neutral-400 hidden sm:inline">{activeGrade.lut}</span>
+          </div>
+        </div>
+
+        {/* Interactive Split Viewer */}
         <div
           ref={containerRef}
           onMouseDown={() => setIsDragging(true)}
@@ -81,30 +95,30 @@ export default function BeforeAfterSlider() {
           onTouchStart={() => setIsDragging(true)}
           onTouchEnd={() => setIsDragging(false)}
           onTouchMove={handleTouchMove}
-          className="relative w-full h-[380px] sm:h-[500px] md:h-[620px] select-none cursor-ew-resize overflow-hidden"
+          className="relative w-full h-[360px] sm:h-[500px] md:h-[640px] select-none cursor-ew-resize overflow-hidden bg-black"
         >
-          {/* AFTER Image (Full Layer at back) */}
+          {/* AFTER Image (Graded) */}
           <div className="absolute inset-0 w-full h-full">
             <img
-              src={activeItem.afterImage}
+              src={activeGrade.afterImage}
               alt="Graded Result"
               className="w-full h-full object-cover pointer-events-none"
             />
-            {/* Graded Tag */}
-            <div className="absolute top-4 right-4 px-3 py-1 rounded-md bg-black/70 backdrop-blur-md border border-white/10 text-xs font-mono text-emerald-400 font-semibold tracking-wide">
-              {activeItem.afterLabel}
+            {/* Graded Label */}
+            <div className="absolute top-4 right-4 px-3 py-1 rounded-full bg-black/70 backdrop-blur-md border border-white/10 text-[11px] font-mono text-white uppercase tracking-wider">
+              {activeGrade.afterLabel}
             </div>
           </div>
 
-          {/* BEFORE Image (Clipped overlay layer) */}
+          {/* BEFORE Image (RAW Log - Clipped) */}
           <div
             className="absolute inset-y-0 left-0 overflow-hidden pointer-events-none"
-            style={{ width: `${sliderPosition}%` }}
+            style={{ width: `${sliderPos}%` }}
           >
             <div className="relative w-full h-full min-w-full">
               <img
-                src={activeItem.beforeImage}
-                alt="Original RAW"
+                src={activeGrade.beforeImage}
+                alt="Original Log Capture"
                 className="absolute inset-0 w-full h-full object-cover max-w-none"
                 style={{
                   width: containerRef.current
@@ -112,52 +126,33 @@ export default function BeforeAfterSlider() {
                     : "100%",
                 }}
               />
-              {/* RAW Tag */}
-              <div className="absolute top-4 left-4 px-3 py-1 rounded-md bg-black/70 backdrop-blur-md border border-white/10 text-xs font-mono text-amber-400 font-semibold tracking-wide">
-                {activeItem.beforeLabel}
+              {/* RAW Label */}
+              <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/70 backdrop-blur-md border border-white/10 text-[11px] font-mono text-neutral-400 uppercase tracking-wider">
+                {activeGrade.beforeLabel}
               </div>
             </div>
           </div>
 
-          {/* Divider Handle Bar */}
+          {/* Vertical Scrubber Hairline */}
           <div
-            className="absolute top-0 bottom-0 w-0.5 bg-accent-cyan shadow-[0_0_15px_#00f0ff] pointer-events-none"
-            style={{ left: `${sliderPosition}%` }}
+            className="absolute top-0 bottom-0 w-[1px] bg-white pointer-events-none shadow-[0_0_10px_rgba(255,255,255,0.8)]"
+            style={{ left: `${sliderPos}%` }}
           >
-            {/* Center Draggable Knob */}
-            <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-[#0d0f17] border-2 border-accent-cyan shadow-xl flex items-center justify-center text-accent-cyan">
-              <ArrowLeftRight className="w-4 h-4 animate-pulse" />
+            {/* Drag Handle */}
+            <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-white text-black flex items-center justify-center shadow-2xl">
+              <ArrowLeftRight className="w-3.5 h-3.5" />
             </div>
           </div>
         </div>
 
-        {/* Info Strip Below Slider */}
-        <div className="p-4 sm:p-6 bg-[#090a0f] border-t border-border flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h4 className="text-base font-bold text-white flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-accent-cyan" />
-              {activeItem.title}
-            </h4>
-            <p className="text-xs text-neutral-400 mt-0.5">
-              {activeItem.subtitle}
-            </p>
-          </div>
-
+        {/* Bottom Technical Strip */}
+        <div className="px-5 py-4 bg-[#07070a] border-t border-white/[0.08] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs font-mono text-neutral-400">
           <div className="flex items-center gap-2">
-            <span className="text-xs text-neutral-400 font-mono flex items-center gap-1.5">
-              <Layers className="w-3.5 h-3.5 text-neutral-500" />
-              Pipeline:
-            </span>
-            <div className="flex gap-1.5">
-              {activeItem.softwareUsed.map((sw) => (
-                <span
-                  key={sw}
-                  className="px-2.5 py-1 rounded-md bg-surface border border-border text-[11px] text-neutral-300 font-medium"
-                >
-                  {sw}
-                </span>
-              ))}
-            </div>
+            <SlidersHorizontal className="w-3.5 h-3.5 text-neutral-500" />
+            <span>Workflow: Primary Wheel Isolation • Tone Curve Contrast • Film Grain Print</span>
+          </div>
+          <div className="text-[11px] text-neutral-500">
+            [DRAG HORIZONTALLY TO REVEAL]
           </div>
         </div>
       </div>
