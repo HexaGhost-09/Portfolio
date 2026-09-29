@@ -1,4 +1,4 @@
-# Rasel — Creative Video Editor & Visual Artist Portfolio
+# YOUR NAME — Creative Video Editor & Visual Artist Portfolio
 
 A sleek, dark cinematic portfolio built with **Next.js (App Router)** and **Tailwind CSS**. Designed specifically for showcasing video editing, After Effects motion graphics, Lightroom color grading, and Photoshop retouching.
 
